@@ -1,0 +1,105 @@
+{
+  "name": "Angular-App",
+  "version": "0.0.0",
+  "description": "POC",
+  "main": "main.js",
+  "author": {
+    "name": "DIS",
+    "email": "maximek.travail@gmail.com"
+  },
+  "scripts": {
+    "ng": "ng",
+    "postinstall": "npm run postinstall:electron && electron-builder install-app-deps",
+    "postinstall:web": "node postinstall-web",
+    "postinstall:electron": "node postinstall",
+    "start": "npm run postinstall:electron && npm-run-all -p ng:serve electron:serve",
+    "build": "npm run postinstall:electron && npm run electron:serve-tsc && ng build",
+    "build:dev": "npm run build -- -c dev",
+    "build:prod": "npm run build -- -c production",
+    "ng:serve": "npm run postinstall:web && ng serve --host 0.0.0.0",
+    "electron:serve-tsc": "tsc -p tsconfig-serve.json",
+    "electron:serve": "wait-on http-get://localhost:4200/ && npm run electron:serve-tsc && electron . --serve",
+    "electron:local": "npm run build:prod && electron .",
+    "electron:linux": "npm run build:prod && electron-builder build --linux",
+    "electron:windows": "npm run build:prod && electron-builder build --windows",
+    "electron:mac": "npm run build:prod && electron-builder build --mac",
+    "test": "npm run postinstall:web && ng test",
+    "test-ci": "npm run postinstall:web && ng test --karmaConfig karma-ci.conf.js",
+    "e2e": "npm run build:prod && mocha --timeout 300000 --require ts-node/register e2e/**/*.spec.ts",
+    "version": "conventional-changelog -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "~8.2.14",
+    "@angular/cdk": "~8.2.3",
+    "@angular/common": "~8.2.14",
+    "@angular/compiler": "~8.2.14",
+    "@angular/core": "~8.2.14",
+    "@angular/forms": "~8.2.14",
+    "@angular/material": "^8.2.3",
+    "@angular/platform-browser": "~8.2.14",
+    "@angular/platform-browser-dynamic": "~8.2.14",
+    "@angular/router": "~8.2.14",
+    "hammerjs": "^2.0.8",
+    "rxjs": "~6.4.0",
+    "tslib": "^1.10.0",
+    "zone.js": "~0.9.1"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "~0.803.24",
+    "@angular/cli": "~8.3.24",
+    "@angular/compiler-cli": "~8.2.14",
+    "@angular/language-service": "~8.2.14",
+    "@types/jasmine": "~3.3.8",
+    "@types/jasminewd2": "~2.0.3",
+    "@types/node": "~8.9.4",
+    "codelyzer": "^5.0.0",
+    "electron": "^8.0.0",
+    "electron-builder": "^22.3.2",
+    "electron-reload": "^1.5.0",
+    "jasmine-core": "~3.4.0",
+    "jasmine-spec-reporter": "~4.2.1",
+    "karma": "~4.1.0",
+    "karma-chrome-launcher": "~2.2.0",
+    "karma-coverage-istanbul-reporter": "~2.0.1",
+    "karma-jasmine": "~2.0.1",
+    "karma-jasmine-html-reporter": "^1.4.0",
+    "karma-junit-reporter": "^2.0.1",
+    "npm-run-all": "^4.1.5",
+    "protractor": "~5.4.0",
+    "ts-node": "~7.0.0",
+    "tslint": "~5.15.0",
+    "typescript": "~3.5.3",
+    "wait-on": "^4.0.0"
+  },
+  "build": {
+    "appId": "com.angerona.app",
+    "copyright": "Copyright © 2019 ${autor${name}}",
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.ico",
+      "artifactName": "${name}-Setup-${version}.${ext}"
+    },
+    "nsis": {
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "oneClick": false,
+      "perMachine": false
+    },
+    "directories": {
+      "buildResources": "dist/AngularElectronBlank/assets",
+      "output": "release"
+    },
+    "files": [
+      "**/*",
+      "build/icon.*"
+    ]
+  }
+}
